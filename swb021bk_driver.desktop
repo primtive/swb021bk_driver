@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=SWB021BK Tablet
+Comment=Tablet driver
+Exec=swb021bk_driver
+Icon=swb021bk_driver
+Terminal=false
+Categories=Utility;

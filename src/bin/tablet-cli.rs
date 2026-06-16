@@ -14,11 +14,20 @@ fn main() {
         device.grab().unwrap();
         let mut ctr = Controller::new();
         println!("Device grabbed");
-        if let Some(preset) = std::env::args().nth(1)
-            && &preset == "-l"
-        {
-            ctr.executor.set_preset(Preset::LibreSprite);
-            println!("using libresprite preset");
+        if let Some(preset) = std::env::args().nth(1) {
+            match preset.as_str() {
+                "-l" => {
+                    ctr.executor.set_preset(Preset::LibreSprite);
+                    println!("using libresprite preset");
+                }
+                "-k" => {
+                    ctr.executor.set_preset(Preset::Krita);
+                    println!("using krita preset");
+                }
+                _ => {
+                    println!("using rnote (default) preset");
+                }
+            }
         }
 
         loop {

@@ -1,6 +1,6 @@
 use crate::executor::{
     Action::{self},
-    Executor, Mode,
+    Executor, Mode, Preset,
 };
 
 #[derive(Debug)]
@@ -68,6 +68,7 @@ pub struct Controller {
     pub executor: Executor,
     pan: bool,
     pan_holded: bool,
+    krita_eraser_enabled: bool,
 }
 
 impl Controller {
@@ -85,11 +86,22 @@ impl Controller {
             executor: Executor::new(),
             pan: false,
             pan_holded: false,
+            krita_eraser_enabled: false,
         }
     }
     pub fn set_mode(&mut self, mode: Mode) {
         if mode != self.mode {
             self.mode = mode;
+            if self.executor.preset == Preset::Krita {
+                match (mode, self.krita_eraser_enabled) {
+                    (Mode::Brush, true) | (Mode::Eraser, false) => {
+                        self.executor.execute(Action::KritaToggleEraser);
+                        self.krita_eraser_enabled = !self.krita_eraser_enabled;
+                        return;
+                    }
+                    _ => {}
+                }
+            }
             self.executor.execute(Action::SetMode(mode));
         }
     }
@@ -129,14 +141,11 @@ impl Controller {
                         self.executor.execute(Action::Pan(self.pan));
                     }
                 }
-                (ButtonId::Btn4, ButtonEvent::Click) => {
-                    // self.executor.execute(Action::SwitchMonitor);
-                    match self.mode {
-                        Mode::Brush => self.set_mode(Mode::Eraser),
-                        Mode::Eraser => self.set_mode(Mode::Brush),
-                        Mode::Select => self.executor.execute(Action::Delete),
-                    }
-                }
+                (ButtonId::Btn4, ButtonEvent::Click) => match self.mode {
+                    Mode::Brush => self.set_mode(Mode::Eraser),
+                    Mode::Eraser => self.set_mode(Mode::Brush),
+                    Mode::Select => self.executor.execute(Action::Delete),
+                },
                 (ButtonId::Btn5, ButtonEvent::Click) => {
                     self.executor.execute(Action::ZoomIn);
                 }
@@ -149,11 +158,15 @@ impl Controller {
                     Mode::Select => self.executor.execute(Action::Delete),
                 },
                 (ButtonId::PenMinus, ButtonEvent::Click) => {
-                    self.set_mode(if self.mode != Mode::Select {
-                        Mode::Select
+                    if self.executor.preset == Preset::Krita {
+                        self.executor.execute(Action::Custom1);
                     } else {
-                        Mode::Brush
-                    });
+                        self.set_mode(if self.mode != Mode::Select {
+                            Mode::Select
+                        } else {
+                            Mode::Brush
+                        });
+                    }
                 }
                 _ => {}
             }
