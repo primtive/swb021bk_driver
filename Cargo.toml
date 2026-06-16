@@ -1,0 +1,10 @@
+[package]
+name = "swb021bk_driver"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+evdev = "0.13.2"
+gtk = "0.18.2"
+image = "0.25.10"
+tray-icon = "0.24.1"
