@@ -4,6 +4,7 @@ pkgrel=1
 source=("$pkgname::git+https://github.com/primtive/swb021bk_driver.git")
 sha256sums=('SKIP')
 makedepends=('cargo' 'git')
+depends=('xdotool')
 arch=('x86_64')
 pkgdesc="small rust driver for swb021bk tablet"
 url="https://github.com/primtive/swb021bk_driver"

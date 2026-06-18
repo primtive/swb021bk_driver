@@ -16,5 +16,6 @@ it reads evdev input, remaps buttons, and lets you switch modes from a tray icon
 
 ## notes
 - linux only
-- requires input group for user
+- requires input group
+- requires access to /dev/uinput
 - any wm/de

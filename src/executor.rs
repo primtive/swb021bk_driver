@@ -7,9 +7,9 @@ pub struct Executor {
 
 #[derive(Clone, Copy, Default, PartialEq)]
 pub enum Preset {
-    #[default]
     Rnote,
     LibreSprite,
+    #[default]
     Krita,
 }
 
